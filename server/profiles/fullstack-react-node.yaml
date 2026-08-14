@@ -1,0 +1,29 @@
+search:
+  title_keywords_positive: [fullstack, full stack, full-stack, react, node]
+  title_keywords_negative: [intern, unpaid, embedded, mobile]
+  relevant_tech: [react, node, express, typescript, postgresql, mongodb, docker]
+  jsearch_queries:
+    - query: "fullstack developer react node"
+      country: "IN"
+      date_posted: "3days"
+
+scoring:
+  experience_target: mid
+  min_score_to_store: 25
+  weights: { title: 35, tech: 35, experience: 15, signal: 15 }
+  core_tech: [react, node, typescript]
+
+location:
+  region_positive: [india, remote, worldwide, global, apac]
+  region_negative: ["us only", "eu only", "no visa sponsorship"]
+
+outreach:
+  candidate_name: "Your Name"
+  bio_short: "3+ years building full-stack apps with React + Node"
+  dm_short_template: "{greeting}, I noticed {company} is hiring for {title}. {bio_short} — would love to connect."
+  dm_long_template: "{greeting},\n\nI noticed {company} is hiring for {title}. {bio_short}\n\n{achievements}\n\nWould love to connect and learn more about the role.\n\nBest,\n{candidate_name}"
+  recipient_email: "you@example.com"
+
+email:
+  daily_hour: 9
+  daily_jobs_count: 15

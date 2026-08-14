@@ -1,0 +1,29 @@
+search:
+  title_keywords_positive: [backend, node, express, api, server, microservice]
+  title_keywords_negative: [frontend, ios, android, intern, unpaid]
+  relevant_tech: [node, express, javascript, typescript, postgresql, redis, mongodb, docker]
+  jsearch_queries:
+    - query: "node.js backend developer"
+      country: "IN"
+      date_posted: "3days"
+
+scoring:
+  experience_target: mid
+  min_score_to_store: 25
+  weights: { title: 35, tech: 35, experience: 15, signal: 15 }
+  core_tech: [node, express, javascript, typescript]
+
+location:
+  region_positive: [india, bangalore, remote, worldwide, global, apac]
+  region_negative: ["us only", "eu only", "no visa sponsorship"]
+
+outreach:
+  candidate_name: "Your Name"
+  bio_short: "3+ years building Node/Express backends"
+  dm_short_template: "{greeting}, I noticed {company} is hiring for {title}. {bio_short} — would love to connect."
+  dm_long_template: "{greeting},\n\nI noticed {company} is hiring for {title}. {bio_short}\n\n{achievements}\n\nWould love to connect and learn more about the role.\n\nBest,\n{candidate_name}"
+  recipient_email: "you@example.com"
+
+email:
+  daily_hour: 9
+  daily_jobs_count: 15

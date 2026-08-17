@@ -1,10 +1,16 @@
 {
   "name": "job-scraper",
   "private": true,
-  "workspaces": ["server", "client"],
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run dev -w client",
     "build:client": "npm run build -w client"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
   }
 }

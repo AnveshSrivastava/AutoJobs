@@ -1,11 +1,60 @@
-function App() {
+import { Routes, Route, NavLink, Outlet } from 'react-router-dom';
+import { LayoutDashboard, Send, UserCircle } from 'lucide-react';
+import DashboardPage from './pages/Dashboard';
+import OutreachPage from './pages/Outreach';
+import ProfilePage from './pages/Profile';
+
+function Shell() {
   return (
-    <div style={{ fontFamily: 'sans-serif', textAlign: 'center', padding: '4rem' }}>
-      <h1>Job Scraper</h1>
-      <p>React client scaffold — Step 1 placeholder.</p>
-      <p>Real UI will be built in Step 9.</p>
+    <div className="app-container">
+      <aside className="sidebar">
+        <div style={{ padding: '8px 16px', marginBottom: '16px' }}>
+          <h1 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)' }}>AntiGravity</h1>
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Job Scraper & Outreach</p>
+        </div>
+        
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <NavLink 
+            to="/" 
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            <LayoutDashboard size={18} />
+            Dashboard
+          </NavLink>
+          <NavLink 
+            to="/outreach" 
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            <Send size={18} />
+            Outreach
+          </NavLink>
+          <NavLink 
+            to="/profile" 
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            <UserCircle size={18} />
+            Profiles
+          </NavLink>
+        </nav>
+      </aside>
+      
+      <main className="main-content">
+        <Outlet />
+      </main>
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Shell />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="outreach" element={<OutreachPage />} />
+        <Route path="profile" element={<ProfilePage />} />
+      </Route>
+    </Routes>
+  );
+}
+
+export default App;

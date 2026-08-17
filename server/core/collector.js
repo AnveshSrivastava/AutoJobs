@@ -16,7 +16,17 @@ import * as remotiveSource  from '../sources/remotive.js';
 import * as remoteokSource  from '../sources/remoteok.js';
 import * as arbeitnowSource from '../sources/arbeitnow.js';
 
+import * as greenhouseSource from '../sources/greenhouse.js';
+import * as leverSource from '../sources/lever.js';
+import * as ashbySource from '../sources/ashby.js';
+
 const SOURCES = [remotiveSource, remoteokSource, arbeitnowSource];
+
+const ATS_SOURCES = {
+  greenhouse: greenhouseSource,
+  lever: leverSource,
+  ashby: ashbySource
+};
 
 // ─── API usage tracking ───────────────────────────────────────────────────────
 
@@ -59,14 +69,69 @@ const UPDATE_JOB = `
   WHERE id = @id
 `;
 
+// ─── Concurrent Company Crawler ─────────────────────────────────────────────────
+
+async function crawlCompanies(companies) {
+  const concurrency = 5;
+  const results = [];
+  let inFlight = 0;
+  let index = 0;
+
+  const db = getDb();
+  const updateSuccess = db.prepare("UPDATE companies SET last_crawled_at = datetime('now'), crawl_status = 'active' WHERE id = ?");
+  const updateFailure = db.prepare("UPDATE companies SET crawl_status = 'failed', last_crawled_at = datetime('now') WHERE id = ?");
+
+  return new Promise((resolve) => {
+    const enqueue = () => {
+      if (index >= companies.length && inFlight === 0) {
+        resolve(results);
+        return;
+      }
+      
+      while (inFlight < concurrency && index < companies.length) {
+        const company = companies[index++];
+        const sourceModule = ATS_SOURCES[company.ats_platform];
+
+        if (!sourceModule || !company.ats_slug) {
+          // Log missing info and skip
+          console.warn(`[company-crawler] Skipping ${company.name}: missing platform or slug`);
+          continue;
+        }
+
+        inFlight++;
+        
+        sourceModule.fetchJobs(company)
+          .then(jobs => {
+            updateSuccess.run(company.id);
+            trackApiUsage(`${company.ats_platform}:${company.ats_slug}`);
+            results.push({ company, jobs, status: 'ok' });
+          })
+          .catch(err => {
+            console.error(`[company-crawler] Failed ${company.name}: ${err.message}`);
+            updateFailure.run(company.id);
+            results.push({ company, jobs: [], status: 'error', error: err.message });
+          })
+          .finally(() => {
+            inFlight--;
+            enqueue();
+          });
+      }
+    };
+    enqueue();
+  });
+}
+
 // ─── Main collection run ──────────────────────────────────────────────────────
 
 /**
  * runCollection()
  *
+ * @param {boolean} includeBoards - Fetch from free job boards
+ * @param {boolean} includeCompanies - Fetch from active companies
+ * @param {Array} specificCompanies - Run for only specific companies (used for single crawl test)
  * @returns {object} summary — { totalFetched, inserted, updated, filtered, perSource, durationMs }
  */
-export async function runCollection() {
+export async function runCollection(includeBoards = true, includeCompanies = true, specificCompanies = null) {
   const start = Date.now();
   const activeProfile = getActiveProfile();
 
@@ -78,31 +143,60 @@ export async function runCollection() {
   const minScore      = profileConfig?.scoring?.min_score_to_store ?? 25;
   const db            = getDb();
 
-  // ── 1. Fetch from all sources concurrently ─────────────────────────────────
   console.log(`[collector] Starting collection run — active profile: "${activeProfile.name}" (min_score: ${minScore})`);
 
-  const settled = await Promise.allSettled(
-    SOURCES.map(source => source.fetchJobs())
-  );
+  let allJobs = [];
+  let perSource = {};
 
-  // ── 2. Gather per-source results ───────────────────────────────────────────
-  const allJobs    = [];
-  const perSource  = {};
+  // 1. Fetch from Job Boards (Remotive, RemoteOK, Arbeitnow)
+  if (includeBoards) {
+    const settled = await Promise.allSettled(
+      SOURCES.map(source => source.fetchJobs())
+    );
+    for (let i = 0; i < SOURCES.length; i++) {
+      const { name } = SOURCES[i];
+      const result   = settled[i];
 
-  for (let i = 0; i < SOURCES.length; i++) {
-    const { name } = SOURCES[i];
-    const result   = settled[i];
-
-    if (result.status === 'fulfilled') {
-      const jobs = Array.isArray(result.value) ? result.value : [];
-      allJobs.push(...jobs);
-      perSource[name] = { fetched: jobs.length, status: 'ok' };
-      console.log(`[${name}] fetched ${jobs.length} jobs`);
-      trackApiUsage(name);
-    } else {
-      perSource[name] = { fetched: 0, status: 'error', error: result.reason?.message ?? 'unknown error' };
-      console.error(`[${name}] FAILED: ${result.reason?.message ?? result.reason}`);
+      if (result.status === 'fulfilled') {
+        const jobs = Array.isArray(result.value) ? result.value : [];
+        allJobs.push(...jobs);
+        perSource[name] = { fetched: jobs.length, status: 'ok' };
+        console.log(`[${name}] fetched ${jobs.length} jobs`);
+        trackApiUsage(name);
+      } else {
+        perSource[name] = { fetched: 0, status: 'error', error: result.reason?.message ?? 'unknown error' };
+        console.error(`[${name}] FAILED: ${result.reason?.message ?? result.reason}`);
+      }
     }
+  }
+
+  // 2. Fetch from Companies ATS
+  if (includeCompanies || specificCompanies) {
+    let targetCompanies = specificCompanies;
+    if (!targetCompanies) {
+      targetCompanies = db.prepare("SELECT * FROM companies WHERE crawl_status != 'paused'").all();
+    }
+    
+    console.log(`[collector] Crawling ${targetCompanies.length} companies...`);
+    const companyResults = await crawlCompanies(targetCompanies);
+
+    let companyFetchedCount = 0;
+    let companySuccessCount = 0;
+    let companyFailedCount = 0;
+
+    for (const res of companyResults) {
+       const srcName = `${res.company.ats_platform}:${res.company.ats_slug}`;
+       perSource[srcName] = { 
+         fetched: res.jobs.length, 
+         status: res.status, 
+         error: res.error 
+       };
+       allJobs.push(...res.jobs);
+       companyFetchedCount += res.jobs.length;
+       if (res.status === 'ok') companySuccessCount++;
+       else companyFailedCount++;
+    }
+    console.log(`[collector] Company crawl done: ${companySuccessCount} ok, ${companyFailedCount} failed. Fetched ${companyFetchedCount} jobs.`);
   }
 
   // ── 3. Score → filter → dedup → store (all in a single transaction) ───────
@@ -176,3 +270,4 @@ export async function runCollection() {
 
   return summary;
 }
+

@@ -4,6 +4,7 @@ import { getDb } from './core/database.js';
 import { refreshActiveProfileCache } from './core/profile.js';
 import profilesRouter from './routes/profiles.js';
 import jobsRouter from './routes/jobs.js';
+import companiesRouter from './routes/companies.js';
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,7 @@ refreshActiveProfileCache();
 
 // ─── Routes ──────────────────────────────────────────────
 app.use('/api/profiles', profilesRouter);
+app.use('/api/companies', companiesRouter);
 app.use('/api', jobsRouter);          // covers /api/collect, /api/jobs, /api/stats, /api/sources
 
 app.get('/api/health', (req, res) => {

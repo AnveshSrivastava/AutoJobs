@@ -1,8 +1,43 @@
 import { Router } from 'express';
 import { getDb } from '../core/database.js';
-import { runCollection } from '../core/collector.js';
+import { runCollection, reScoreAll } from '../core/collector.js';
+import { todayIso } from '../core/utils.js';
 
 const router = Router();
+
+// ─── GET /api/jsearch/status ──────────────────────────────────────────────────
+router.get('/jsearch/status', (req, res) => {
+  try {
+    const db = getDb();
+    const today = todayIso();
+    const currentMonth = today.substring(0, 7); // YYYY-MM
+    
+    const todayUsage = db.prepare('SELECT SUM(call_count) as count FROM api_usage WHERE source = ? AND date = ?').get('jsearch', today).count || 0;
+    const monthUsage = db.prepare('SELECT SUM(call_count) as count FROM api_usage WHERE source = ? AND date LIKE ?').get('jsearch', `${currentMonth}-%`).count || 0;
+    
+    const quota = 200;
+    res.json({
+      calls_today: todayUsage,
+      calls_this_month: monthUsage,
+      quota,
+      remaining: Math.max(0, quota - monthUsage),
+      has_key: !!process.env.JSEARCH_API_KEY
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── POST /api/jobs/rescore ───────────────────────────────────────────────────
+router.post('/jobs/rescore', (req, res) => {
+  try {
+    const { delete_below_min } = req.body;
+    const summary = reScoreAll(!!delete_below_min);
+    res.json({ success: true, summary });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ─── POST /api/collect ────────────────────────────────────────────────────────
 // Trigger a manual collection run. Returns the run summary.

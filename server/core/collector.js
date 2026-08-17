@@ -19,6 +19,7 @@ import * as arbeitnowSource from '../sources/arbeitnow.js';
 import * as greenhouseSource from '../sources/greenhouse.js';
 import * as leverSource from '../sources/lever.js';
 import * as ashbySource from '../sources/ashby.js';
+import * as jsearchSource from '../sources/jsearch.js';
 
 const SOURCES = [remotiveSource, remoteokSource, arbeitnowSource];
 
@@ -30,7 +31,7 @@ const ATS_SOURCES = {
 
 // ─── API usage tracking ───────────────────────────────────────────────────────
 
-function trackApiUsage(source) {
+export function trackApiUsage(source) {
   const db   = getDb();
   const today = todayIso();
   const row  = db.prepare(
@@ -67,6 +68,13 @@ const UPDATE_JOB = `
     india_friendly  = @india_friendly,
     location_note   = @location_note
   WHERE id = @id
+`;
+
+const CLEANUP_STALE_JOBS = `
+  DELETE FROM jobs 
+  WHERE status = 'new' 
+    AND mark_for_email = 0 
+    AND last_seen < datetime('now', '-14 days')
 `;
 
 // ─── Concurrent Company Crawler ─────────────────────────────────────────────────
@@ -126,10 +134,10 @@ async function crawlCompanies(companies) {
 /**
  * runCollection()
  *
- * @param {boolean} includeBoards - Fetch from free job boards
+ * @param {boolean} includeBoards - Fetch from free job boards & JSearch
  * @param {boolean} includeCompanies - Fetch from active companies
  * @param {Array} specificCompanies - Run for only specific companies (used for single crawl test)
- * @returns {object} summary — { totalFetched, inserted, updated, filtered, perSource, durationMs }
+ * @returns {object} summary — { totalFetched, inserted, updated, filtered, perSource, durationMs, staleDeleted }
  */
 export async function runCollection(includeBoards = true, includeCompanies = true, specificCompanies = null) {
   const start = Date.now();
@@ -148,13 +156,20 @@ export async function runCollection(includeBoards = true, includeCompanies = tru
   let allJobs = [];
   let perSource = {};
 
-  // 1. Fetch from Job Boards (Remotive, RemoteOK, Arbeitnow)
+  // 1. Fetch from Job Boards (Remotive, RemoteOK, Arbeitnow, JSearch)
   if (includeBoards) {
+    const activeSources = [...SOURCES];
+    // Add JSearch config to its module fetch call (we wrap it here so it fits the Promise.allSettled pattern)
+    activeSources.push({
+      name: 'jsearch',
+      fetchJobs: () => jsearchSource.fetchJobs(profileConfig?.search?.jsearch_queries)
+    });
+
     const settled = await Promise.allSettled(
-      SOURCES.map(source => source.fetchJobs())
+      activeSources.map(source => source.fetchJobs())
     );
-    for (let i = 0; i < SOURCES.length; i++) {
-      const { name } = SOURCES[i];
+    for (let i = 0; i < activeSources.length; i++) {
+      const { name } = activeSources[i];
       const result   = settled[i];
 
       if (result.status === 'fulfilled') {
@@ -162,7 +177,11 @@ export async function runCollection(includeBoards = true, includeCompanies = tru
         allJobs.push(...jobs);
         perSource[name] = { fetched: jobs.length, status: 'ok' };
         console.log(`[${name}] fetched ${jobs.length} jobs`);
-        trackApiUsage(name);
+        
+        // Tracking JSearch happens inside jsearch.js now per query, but for free boards we track once here
+        if (name !== 'jsearch') {
+          trackApiUsage(name);
+        }
       } else {
         perSource[name] = { fetched: 0, status: 'error', error: result.reason?.message ?? 'unknown error' };
         console.error(`[${name}] FAILED: ${result.reason?.message ?? result.reason}`);
@@ -211,10 +230,8 @@ export async function runCollection(includeBoards = true, includeCompanies = tru
 
   const storeAll = db.transaction(() => {
     for (const job of allJobs) {
-      // Score against active profile
       const scored = scoreJob(job, profileConfig);
 
-      // Drop below threshold
       if (scored.relevanceScore < minScore) {
         filtered++;
         continue;
@@ -251,6 +268,10 @@ export async function runCollection(includeBoards = true, includeCompanies = tru
 
   storeAll();
 
+  // ── 4. Stale-Job Cleanup ──────────────────────────────────────────────────
+  const cleanupResult = db.prepare(CLEANUP_STALE_JOBS).run();
+  const staleDeleted = cleanupResult.changes;
+
   const durationMs = Date.now() - start;
 
   const summary = {
@@ -259,15 +280,76 @@ export async function runCollection(includeBoards = true, includeCompanies = tru
     updated,
     filtered,
     survived: inserted + updated,
+    staleDeleted,
     durationMs,
     perSource,
   };
 
   console.log(
     `[collector] Done in ${durationMs}ms — ` +
-    `fetched:${totalFetched} inserted:${inserted} updated:${updated} filtered:${filtered}`
+    `fetched:${totalFetched} inserted:${inserted} updated:${updated} filtered:${filtered} stale_deleted:${staleDeleted}`
   );
 
   return summary;
+}
+
+// ─── Re-Score All ─────────────────────────────────────────────────────────────
+
+/**
+ * reScoreAll()
+ * Retroactively score all jobs based on active profile, option to delete below threshold
+ * @param {boolean} deleteBelowMin 
+ */
+export function reScoreAll(deleteBelowMin = false) {
+  const activeProfile = getActiveProfile();
+  if (!activeProfile) {
+    throw new Error('No active profile. Import and activate one before re-scoring.');
+  }
+
+  const profileConfig = activeProfile.config;
+  const minScore      = profileConfig?.scoring?.min_score_to_store ?? 25;
+  const db            = getDb();
+  
+  let rescored = 0;
+  let deleted = 0;
+
+  const updateStmt = db.prepare(`
+    UPDATE jobs SET 
+      relevance_score = @relevance_score,
+      tech_stack = @tech_stack,
+      experience_level = @experience_level,
+      india_friendly = @india_friendly,
+      location_note = @location_note
+    WHERE id = @id
+  `);
+
+  const deleteStmt = db.prepare(`DELETE FROM jobs WHERE id = ?`);
+
+  db.transaction(() => {
+    // Only fetch fields needed for scoring to avoid loading huge descriptions if possible,
+    // actually scoreJob requires everything (description etc) so fetch *
+    const jobs = db.prepare(`SELECT * FROM jobs`).all();
+    
+    for (const job of jobs) {
+      const scored = scoreJob(job, profileConfig);
+
+      if (deleteBelowMin && scored.relevanceScore < minScore) {
+        deleteStmt.run(job.id);
+        deleted++;
+      } else {
+        updateStmt.run({
+          id: job.id,
+          relevance_score: scored.relevanceScore,
+          tech_stack: scored.techStack.join(', '),
+          experience_level: scored.experienceLevel,
+          india_friendly: scored.indiaFriendly,
+          location_note: scored.locationNote
+        });
+        rescored++;
+      }
+    }
+  })();
+
+  return { rescored, deleted, profile: activeProfile.name, minScore, deleteBelowMin };
 }
 

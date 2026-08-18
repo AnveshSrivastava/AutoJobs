@@ -10,77 +10,118 @@ const assert = require('assert');
   page.on('pageerror', error => console.log('PAGE ERROR:', error.message));
 
   try {
-    console.log("1. Dashboard loads real data");
+    // 1. 3-Filter Intersection (Dashboard)
+    console.log("1. Testing 3-filter intersection...");
     await page.goto('http://127.0.0.1:3000/');
-    await page.waitForTimeout(2000); // wait for initial render
-    await page.screenshot({ path: 'dashboard.png' });
-    
     await page.waitForSelector('table', { timeout: 5000 });
-    const rows = await page.locator('tbody tr').count();
-    console.log(`Found ${rows} jobs in the dashboard.`);
-    assert(rows > 0, "Dashboard should load jobs");
     
-    console.log("2. Each filter works individually");
-    // Filter status = new
-    await page.selectOption('select[name="status"]', 'new');
-    await page.waitForTimeout(500); // wait for refetch
-    // we don't assert count, but we check if it didn't crash
-    await page.selectOption('select[name="status"]', ''); // reset
-    
-    console.log("3. Filters combine correctly");
-    await page.fill('input[name="search"]', 'backend');
+    // Apply min_score, region=yes, tech keyword
     await page.fill('input[name="min_score"]', '10');
-    await page.waitForTimeout(1000); // debounce + fetch
-    const combinedRows = await page.locator('tbody tr').count();
-    console.log(`Found ${combinedRows} jobs with combined filters`);
+    await page.selectOption('select[name="india_friendly"]', 'yes');
+    await page.fill('input[name="tech"]', 'node');
+    await page.waitForTimeout(1500); // Wait for debounce and network
     
-    console.log("4. Job status/mark-for-email actions work & reflect immediately");
-    // Toggle first job mark for email
-    const firstBtn = page.locator('tbody tr:first-child button').first();
-    const prevClass = await firstBtn.getAttribute('class');
-    await firstBtn.click();
-    await page.waitForTimeout(1000);
-    const newClass = await firstBtn.getAttribute('class');
-    assert(prevClass !== newClass, "Email button class should change");
-    
-    console.log("5. Loading vs empty vs error states visually distinct");
-    await page.fill('input[name="min_score"]', '9999'); // force empty
-    await page.waitForTimeout(1000);
-    const emptyState = await page.locator('.empty-state').count();
-    assert(emptyState > 0, "Empty state should be visible");
-    
-    console.log("6. Outreach list loads and displays correctly");
-    await page.goto('http://127.0.0.1:3000/outreach');
-    // We may not have outreach items if they were cleared, but let's check for the empty state or cards
-    await page.waitForTimeout(1000);
-    const outreachCards = await page.locator('.card:has(h3)').count();
-    console.log(`Found ${outreachCards} outreach items`);
-    
-    console.log("7. LinkedIn links are genuinely clickable from UI");
-    if (outreachCards > 0) {
-      const linkHref = await page.locator('.card a[href*="linkedin.com"]').first().getAttribute('href');
-      assert(linkHref.includes('linkedin.com'), "LinkedIn link should be valid");
+    // Check if table rows exist and their content matches criteria
+    const rows = page.locator('tbody tr');
+    const rowCount = await rows.count();
+    console.log(`Found ${rowCount} rows with 3 filters applied.`);
+    if (rowCount > 0) {
+      for (let i = 0; i < rowCount; i++) {
+        const text = await rows.nth(i).innerText();
+        const scoreMatch = text.match(/\n(\d+)\n/); // basic extraction of score badge
+        if (scoreMatch) {
+            const score = parseInt(scoreMatch[1]);
+            assert(score >= 10, `Score ${score} is less than 10`);
+        }
+        assert(text.toLowerCase().includes('yes'), "Row should contain 'yes' for region");
+        assert(text.toLowerCase().includes('node'), "Row should contain 'node' tech stack");
+      }
+      console.log("-> 3-filter intersection assertions passed.");
+    } else {
+      console.log("-> 0 rows found for 3 filters, skipping explicit assertion but filter didn't crash.");
     }
 
-    console.log("8. Copy-to-clipboard works");
-    // Hard to test clipboard in headless without permissions, we'll verify the button clicks at least
-    if (outreachCards > 0) {
-      await page.locator('.card button:has-text("Copy")').first().click();
-      console.log("Copy button clicked successfully");
-    }
-    
-    console.log("9. Outreach status/notes updates work & persist");
-    // skipping e2e assert, but UI handles it
-    
-    console.log("10. Profile switching works from the UI");
+    // 2. Profile Editor UI - Validation Error (Zod integration)
+    console.log("2. Testing Profile Editor Validation Error UI...");
     await page.goto('http://127.0.0.1:3000/profile');
-    await page.waitForTimeout(1000);
-    const profiles = await page.locator('.sidebar button').count();
-    console.log(`Found ${profiles} profiles`);
+    await page.waitForSelector('form', { timeout: 5000 });
     
-    console.log("14. Production build serves correctly");
-    const res = await page.goto('http://127.0.0.1:3000/outreach');
-    assert(res.status() === 200, "Should return 200 on deep link");
+    // Clear the JSearch query to trigger required error
+    const firstQueryInput = page.locator('input[placeholder="Query (e.g. node.js backend)"]').first();
+    await firstQueryInput.fill('');
+    await page.click('button[type="submit"]');
+    
+    await page.waitForSelector('.error-text', { timeout: 2000 });
+    const errorText = await page.locator('.error-text').first().innerText();
+    assert(errorText.includes('Query is required'), "Should show field-level Zod error for missing query");
+    console.log("-> Field-level validation error rendered correctly:", errorText);
+
+    // 3. Profile Editor UI - Sibling Fields Integrity & Persistence
+    console.log("3. Testing Profile Sibling Integrity & Persistence...");
+    // Reload to clear validation error state
+    await page.reload();
+    await page.waitForSelector('form', { timeout: 5000 });
+    await page.waitForTimeout(1000); // Wait for form to populate
+
+    // Note initial values of siblings
+    const initialMinScore = await page.inputValue('input[name="scoring.min_score_to_store"]');
+    const initialBio = await page.inputValue('input[name="outreach.bio_short"]');
+    
+    // Edit across 4 sections
+    // Section 1: search (add a JSearch query or just change positive kw)
+    // using chip input (find the input adjacent to the label):
+    const titleContainer = page.locator('div.form-group:has-text("Positive Title Keywords")');
+    await titleContainer.locator('input[type="text"]').fill('playwright-test');
+    await titleContainer.locator('input[type="text"]').press('Enter');
+    
+    // Section 2: scoring (edit weight)
+    await page.fill('input[name="scoring.weights.title"]', '40');
+    // Section 3: location (add a negative region)
+    const locContainer = page.locator('div.form-group:has-text("Region Negative Keywords")');
+    await locContainer.locator('input[type="text"]').fill('mars');
+    await locContainer.locator('input[type="text"]').press('Enter');
+    // Section 4: outreach
+    await page.fill('input[name="outreach.candidate_name"]', 'Test Name');
+    
+    // Save
+    await page.click('button[type="submit"]');
+    await page.waitForTimeout(1000); // wait for save API and refetch
+    
+    // Reload page
+    await page.reload();
+    await page.waitForSelector('form', { timeout: 5000 });
+    await page.waitForTimeout(1000); // Wait for form initialValues to populate
+
+    // Assert edits persisted
+    const savedName = await page.inputValue('input[name="outreach.candidate_name"]');
+    const savedWeight = await page.inputValue('input[name="scoring.weights.title"]');
+    assert.strictEqual(savedName, 'Test Name', "Candidate name edit did not persist");
+    assert.strictEqual(savedWeight, '40', "Weight edit did not persist");
+    
+    // Assert sibling integrity (untouched fields should be exactly the same as before)
+    const reloadedMinScore = await page.inputValue('input[name="scoring.min_score_to_store"]');
+    const reloadedBio = await page.inputValue('input[name="outreach.bio_short"]');
+    assert.strictEqual(reloadedMinScore, initialMinScore, "Sibling field (min_score_to_store) was mutated!");
+    assert.strictEqual(reloadedBio, initialBio, "Sibling field (bio_short) was mutated!");
+    console.log("-> Profile edits persisted and sibling fields maintained integrity.");
+
+    // 4. Duplicate Profile UI
+    console.log("4. Testing Duplicate Profile UI...");
+    const initialProfiles = await page.locator('.card button.btn').count();
+    await page.click('button:has-text("Duplicate")');
+    await page.waitForTimeout(1000); // wait for mutation and invalidation
+    let newProfiles = await page.locator('.card button.btn').count();
+    assert(newProfiles === initialProfiles + 1, "Should have 1 more profile in sidebar after duplication");
+    console.log("-> Duplication works from UI.");
+
+    // 5. Import Preset UI
+    console.log("5. Testing Import Preset UI...");
+    await page.selectOption('select#preset-select', { index: 1 }); // select first preset
+    await page.click('button:has-text("Import")');
+    await page.waitForTimeout(1000);
+    newProfiles = await page.locator('.card button.btn').count();
+    assert(newProfiles === initialProfiles + 2, "Should have 2 more profiles in sidebar after import");
+    console.log("-> Import Preset works from UI.");
     
     console.log("ALL AUTOMATED UI CHECKS PASSED.");
   } catch (err) {

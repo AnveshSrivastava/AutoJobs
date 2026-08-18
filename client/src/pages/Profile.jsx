@@ -102,6 +102,40 @@ export default function ProfilePage() {
             )
           })}
         </div>
+        
+        <div style={{ marginTop: '32px' }}>
+          <h4 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Presets</h4>
+          <div className="flex gap-2">
+            <select 
+              id="preset-select" 
+              className="form-select" 
+              style={{ flex: 1, fontSize: '13px' }}
+              defaultValue=""
+            >
+              <option value="" disabled>Select preset...</option>
+              {data?.presets?.map(preset => (
+                <option key={preset} value={preset}>{preset}</option>
+              ))}
+            </select>
+            <button 
+              className="btn btn-secondary btn-sm"
+              onClick={() => {
+                const select = document.getElementById('preset-select');
+                if (select.value) {
+                  fetchApi('/profiles/import', {
+                    method: 'POST',
+                    body: JSON.stringify({ preset_slug: select.value })
+                  }).then((newProfile) => {
+                    queryClient.invalidateQueries({ queryKey: ['profiles'] });
+                    setSelectedProfileId(newProfile.id);
+                  }).catch(err => alert(err.message));
+                }
+              }}
+            >
+              <Download size={14} /> Import
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Main Content: Profile Editor */}

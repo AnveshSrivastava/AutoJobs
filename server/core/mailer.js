@@ -17,7 +17,10 @@ function getSmtpConfig() {
     auth: {
       user: smtp.user,
       pass: smtp.pass
-    }
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000
   };
 }
 

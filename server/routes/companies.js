@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
     
     res.json({ companies, total: companies.length });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -41,7 +41,7 @@ router.get('/stats', (req, res) => {
     
     res.json({ total, byPlatform, byStatus, byRegion });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -51,7 +51,7 @@ router.post('/', (req, res) => {
     const db = getDb();
     const { name, domain, ats_platform, ats_slug, is_india_hq } = req.body;
     
-    if (!name) return res.status(400).json({ error: 'name is required' });
+    if (!name) return res.status(400).json({ success: false, error: 'name is required' });
     
     const result = db.prepare(`
       INSERT INTO companies (name, domain, ats_platform, ats_slug, is_india_hq)
@@ -67,7 +67,7 @@ router.post('/', (req, res) => {
     const company = db.prepare('SELECT * FROM companies WHERE id = ?').get(result.lastInsertRowid);
     res.json(company);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -77,7 +77,7 @@ router.put('/:id', (req, res) => {
     const db = getDb();
     const { name, domain, ats_platform, ats_slug, is_india_hq } = req.body;
     
-    if (!name) return res.status(400).json({ error: 'name is required' });
+    if (!name) return res.status(400).json({ success: false, error: 'name is required' });
     
     const result = db.prepare(`
       UPDATE companies SET
@@ -92,12 +92,12 @@ router.put('/:id', (req, res) => {
       req.params.id
     );
     
-    if (result.changes === 0) return res.status(404).json({ error: 'Company not found' });
+    if (result.changes === 0) return res.status(404).json({ success: false, error: 'Company not found' });
     
     const company = db.prepare('SELECT * FROM companies WHERE id = ?').get(req.params.id);
     res.json(company);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -108,15 +108,15 @@ router.patch('/:id/status', (req, res) => {
     const { status } = req.body;
     
     if (!['active', 'paused'].includes(status)) {
-      return res.status(400).json({ error: 'status must be active or paused' });
+      return res.status(400).json({ success: false, error: 'status must be active or paused' });
     }
     
     const result = db.prepare('UPDATE companies SET crawl_status = ? WHERE id = ?').run(status, req.params.id);
-    if (result.changes === 0) return res.status(404).json({ error: 'Company not found' });
+    if (result.changes === 0) return res.status(404).json({ success: false, error: 'Company not found' });
     
     res.json({ id: req.params.id, status });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -146,7 +146,7 @@ router.post('/seed', (req, res) => {
     
     res.json({ success: true, inserted, totalProvided: companies.length });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -158,7 +158,7 @@ router.post('/crawl', async (req, res) => {
     res.json({ success: true, summary });
   } catch (err) {
     console.error('[POST /api/companies/crawl]', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -169,13 +169,13 @@ router.post('/:id/crawl', async (req, res) => {
     const db = getDb();
     const company = db.prepare('SELECT * FROM companies WHERE id = ?').get(req.params.id);
     
-    if (!company) return res.status(404).json({ error: 'Company not found' });
+    if (!company) return res.status(404).json({ success: false, error: 'Company not found' });
     
     const summary = await runCollection(false, false, [company]);
     res.json({ success: true, summary });
   } catch (err) {
     console.error(`[POST /api/companies/${req.params.id}/crawl]`, err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

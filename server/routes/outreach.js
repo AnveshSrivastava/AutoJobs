@@ -14,7 +14,7 @@ router.post('/generate', (req, res) => {
     );
     res.json({ success: true, summary });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -28,7 +28,7 @@ router.post('/refresh', async (req, res) => {
     );
     res.json({ success: true, summary });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -78,7 +78,7 @@ router.get('/', (req, res) => {
 
     res.json({ success: true, records });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -98,7 +98,7 @@ router.get('/stats', (req, res) => {
     
     res.json({ success: true, stats });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -109,19 +109,19 @@ router.patch('/:id/status', (req, res) => {
     const { status } = req.body;
     
     if (!['pending', 'messaged', 'replied', 'followed_up'].includes(status)) {
-      return res.status(400).json({ error: 'Invalid status' });
+      return res.status(400).json({ success: false, error: 'Invalid status' });
     }
     
     const db = getDb();
     const result = db.prepare(`UPDATE outreach SET status = ? WHERE id = ?`).run(status, id);
     
     if (result.changes === 0) {
-      return res.status(404).json({ error: 'Not found' });
+      return res.status(404).json({ success: false, error: 'Not found' });
     }
     
     res.json({ success: true, status });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -135,12 +135,12 @@ router.patch('/:id/notes', (req, res) => {
     const result = db.prepare(`UPDATE outreach SET notes = ? WHERE id = ?`).run(notes || '', id);
     
     if (result.changes === 0) {
-      return res.status(404).json({ error: 'Not found' });
+      return res.status(404).json({ success: false, error: 'Not found' });
     }
     
     res.json({ success: true, notes });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -149,7 +149,7 @@ router.post('/bulk-delete', (req, res) => {
   try {
     const { ids } = req.body;
     if (!Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ error: 'ids must be a non-empty array' });
+      return res.status(400).json({ success: false, error: 'ids must be a non-empty array' });
     }
     
     const db = getDb();
@@ -158,7 +158,7 @@ router.post('/bulk-delete', (req, res) => {
     
     res.json({ success: true, deletedCount: result.changes });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

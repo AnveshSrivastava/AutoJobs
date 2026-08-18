@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
     const presets = listAvailablePresets();
     res.json({ profiles, presets });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -33,11 +33,11 @@ router.get('/active', (req, res) => {
   try {
     const profile = getActiveProfile();
     if (!profile) {
-      return res.status(404).json({ error: 'No active profile. Activate one via POST /api/profiles/:id/activate' });
+      return res.status(404).json({ success: false, error: 'No active profile. Activate one via POST /api/profiles/:id/activate' });
     }
     res.json(profile);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -47,12 +47,12 @@ router.post('/import', (req, res) => {
   try {
     const { preset_slug, activate = false } = req.body;
     if (!preset_slug) {
-      return res.status(400).json({ error: 'preset_slug is required' });
+      return res.status(400).json({ success: false, error: 'preset_slug is required' });
     }
     const profile = importProfileFromYamlFile(preset_slug, { activate });
     res.status(201).json(profile);
   } catch (err) {
-    res.status(err.status ?? 500).json({ error: err.message });
+    res.status(err.status ?? 500).json({ success: false, error: err.message });
   }
 });
 
@@ -61,11 +61,11 @@ router.get('/:id', (req, res) => {
   try {
     const profile = getProfile(req.params.id);
     if (!profile) {
-      return res.status(404).json({ error: `Profile ${req.params.id} not found` });
+      return res.status(404).json({ success: false, error: `Profile ${req.params.id} not found` });
     }
     res.json(profile);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
@@ -74,15 +74,15 @@ router.post('/', (req, res) => {
   try {
     const { name, config } = req.body;
     if (!name) {
-      return res.status(400).json({ error: 'name is required' });
+      return res.status(400).json({ success: false, error: 'name is required' });
     }
     const profile = createProfile({ name, config });
     res.status(201).json(profile);
   } catch (err) {
     if (err.status === 400 && err.validationError) {
-      return res.status(400).json({ error: 'Validation failed', details: err.validationError });
+      return res.status(400).json({ success: false, error: 'Validation failed', details: err.validationError });
     }
-    res.status(err.status ?? 500).json({ error: err.message });
+    res.status(err.status ?? 500).json({ success: false, error: err.message });
   }
 });
 
@@ -92,14 +92,14 @@ router.put('/:id', (req, res) => {
     const { name, config } = req.body;
     const profile = updateProfile(req.params.id, { name, config });
     if (!profile) {
-      return res.status(404).json({ error: `Profile ${req.params.id} not found` });
+      return res.status(404).json({ success: false, error: `Profile ${req.params.id} not found` });
     }
     res.json(profile);
   } catch (err) {
     if (err.status === 400 && err.validationError) {
-      return res.status(400).json({ error: 'Validation failed', details: err.validationError });
+      return res.status(400).json({ success: false, error: 'Validation failed', details: err.validationError });
     }
-    res.status(err.status ?? 500).json({ error: err.message });
+    res.status(err.status ?? 500).json({ success: false, error: err.message });
   }
 });
 
@@ -108,11 +108,11 @@ router.post('/:id/activate', (req, res) => {
   try {
     const profile = activateProfile(req.params.id);
     if (!profile) {
-      return res.status(404).json({ error: `Profile ${req.params.id} not found` });
+      return res.status(404).json({ success: false, error: `Profile ${req.params.id} not found` });
     }
     res.json(profile);
   } catch (err) {
-    res.status(err.status ?? 500).json({ error: err.message });
+    res.status(err.status ?? 500).json({ success: false, error: err.message });
   }
 });
 
@@ -121,11 +121,11 @@ router.post('/:id/duplicate', (req, res) => {
   try {
     const profile = duplicateProfile(req.params.id);
     if (!profile) {
-      return res.status(404).json({ error: `Profile ${req.params.id} not found` });
+      return res.status(404).json({ success: false, error: `Profile ${req.params.id} not found` });
     }
     res.status(201).json(profile);
   } catch (err) {
-    res.status(err.status ?? 500).json({ error: err.message });
+    res.status(err.status ?? 500).json({ success: false, error: err.message });
   }
 });
 
@@ -134,11 +134,11 @@ router.delete('/:id', (req, res) => {
   try {
     const result = deleteProfile(req.params.id);
     if (!result) {
-      return res.status(404).json({ error: `Profile ${req.params.id} not found` });
+      return res.status(404).json({ success: false, error: `Profile ${req.params.id} not found` });
     }
     res.json(result);
   } catch (err) {
-    res.status(err.status ?? 500).json({ error: err.message });
+    res.status(err.status ?? 500).json({ success: false, error: err.message });
   }
 });
 
@@ -147,13 +147,13 @@ router.get('/:id/export', (req, res) => {
   try {
     const yamlStr = exportProfileToYaml(req.params.id);
     if (!yamlStr) {
-      return res.status(404).json({ error: `Profile ${req.params.id} not found` });
+      return res.status(404).json({ success: false, error: `Profile ${req.params.id} not found` });
     }
     res.setHeader('Content-Type', 'text/yaml');
     res.setHeader('Content-Disposition', `attachment; filename="profile-${req.params.id}.yaml"`);
     res.send(yamlStr);
   } catch (err) {
-    res.status(err.status ?? 500).json({ error: err.message });
+    res.status(err.status ?? 500).json({ success: false, error: err.message });
   }
 });
 

@@ -84,9 +84,32 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="page-header">
-        <h1 className="page-title">Dashboard</h1>
-        <p className="page-subtitle">Browse and manage scraped jobs.</p>
+      <div className="page-header flex justify-between items-end">
+        <div>
+          <h1 className="page-title">Dashboard</h1>
+          <p className="page-subtitle">Browse and manage scraped jobs.</p>
+        </div>
+        <button 
+          className="btn btn-secondary" 
+          onClick={async () => {
+            try {
+              const status = await fetchApi('/sheets/status');
+              if (!status.configured) {
+                alert("Google Sheets export is not configured. Missing GOOGLE_APPLICATION_CREDENTIALS or GOOGLE_SHEETS_SPREADSHEET_ID.");
+                return;
+              }
+              const res = await fetchApi('/sheets/export', {
+                method: 'POST',
+                body: JSON.stringify(filters)
+              });
+              alert(`Successfully exported ${res.rowsExported} jobs to Google Sheets!`);
+            } catch (err) {
+              alert(err.message);
+            }
+          }}
+        >
+          Export to Google Sheets
+        </button>
       </div>
 
       <div className="card mb-6" style={{ padding: '16px' }}>

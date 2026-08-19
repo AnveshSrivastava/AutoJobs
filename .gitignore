@@ -4,4 +4,5 @@ jobs.db
 jobs.db-wal
 jobs.db-shm
 dist/
-creds.jsoncreds.json
+creds.json
+creds.json

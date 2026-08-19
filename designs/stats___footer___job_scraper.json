@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/11372909781183248744/screens/a528eaf3a8284546ae2b3a199afbcd76\",\"title\":\"Stats & Footer - Job Scraper\",\"screenshot\":{\"name\":\"projects/11372909781183248744/screens/a528eaf3a8284546ae2b3a199afbcd76/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AP1WRLu6Q4-PuRdzgl13-bGi03QKLCUxU2IK65kDfmmgwPwg86FErOWEswKejDMjlJRRxdFNg_1gjyL-Y6jI3B7QCUUWcMGluFKNvig9b5hca990wo3zDvWDPl0HlCkXBKG0c3K234mFNBGnhUn8YjDzQ5-YyP9Aqwey1dwgbPVlzYsgRfRHq3GbsUTo4iMSk1hlco_7qfkGQ79fuCpQ81Nbo6iEzdBTPPzCCMkmikEvTXDeBs8UJPFZH-346D5P\"},\"htmlCode\":{\"name\":\"projects/11372909781183248744/screens/a528eaf3a8284546ae2b3a199afbcd76/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1OTVhNmRiY2Y1NDQwNzNhZTQ1ZTU5MWY4NWRhEgsSBxCwxdP3oBgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTM3MjkwOTc4MTE4MzI0ODc0NA&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2398\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "2398",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1OTVhNmRiY2Y1NDQwNzNhZTQ1ZTU5MWY4NWRhEgsSBxCwxdP3oBgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTM3MjkwOTc4MTE4MzI0ODc0NA&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/11372909781183248744/screens/a528eaf3a8284546ae2b3a199afbcd76/fileEntries/html"
+    },
+    "name": "projects/11372909781183248744/screens/a528eaf3a8284546ae2b3a199afbcd76",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLu6Q4-PuRdzgl13-bGi03QKLCUxU2IK65kDfmmgwPwg86FErOWEswKejDMjlJRRxdFNg_1gjyL-Y6jI3B7QCUUWcMGluFKNvig9b5hca990wo3zDvWDPl0HlCkXBKG0c3K234mFNBGnhUn8YjDzQ5-YyP9Aqwey1dwgbPVlzYsgRfRHq3GbsUTo4iMSk1hlco_7qfkGQ79fuCpQ81Nbo6iEzdBTPPzCCMkmikEvTXDeBs8UJPFZH-346D5P",
+      "name": "projects/11372909781183248744/screens/a528eaf3a8284546ae2b3a199afbcd76/fileEntries/screenshot"
+    },
+    "title": "Stats & Footer - Job Scraper",
+    "width": "2560"
+  }
+}

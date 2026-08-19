@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AntiGravity Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Manrope:wght@400&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-container": "#00574d",
+                      "inverse-primary": "#006b5f",
+                      "on-background": "#e5e2e1",
+                      "surface-container-low": "#1c1b1b",
+                      "surface-container-lowest": "#0e0e0e",
+                      "error-container": "#93000a",
+                      "surface-variant": "#353534",
+                      "inverse-surface": "#e5e2e1",
+                      "surface": "#131313",
+                      "primary-fixed": "#62fae3",
+                      "outline": "#859490",
+                      "primary-fixed-dim": "#3cddc7",
+                      "on-tertiary-fixed-variant": "#891933",
+                      "on-tertiary-container": "#912038",
+                      "background": "#131313",
+                      "tertiary-container": "#ffa5ae",
+                      "error": "#ffb4ab",
+                      "surface-bright": "#3a3939",
+                      "on-tertiary": "#67001f",
+                      "primary-container": "#2dd4bf",
+                      "tertiary-fixed": "#ffdadc",
+                      "outline-variant": "#3c4a46",
+                      "tertiary-fixed-dim": "#ffb2b9",
+                      "secondary-fixed-dim": "#98da27",
+                      "surface-dim": "#131313",
+                      "on-error": "#690005",
+                      "surface-container": "#201f1f",
+                      "primary": "#57f1db",
+                      "on-primary-fixed": "#00201c",
+                      "secondary-fixed": "#b2f746",
+                      "on-primary-fixed-variant": "#005047",
+                      "surface-container-highest": "#353534",
+                      "on-secondary-container": "#304b00",
+                      "surface-container-high": "#2a2a2a",
+                      "on-tertiary-fixed": "#400010",
+                      "on-secondary-fixed": "#121f00",
+                      "secondary": "#9ddf2e",
+                      "on-surface-variant": "#bacac5",
+                      "on-secondary": "#213600",
+                      "surface-tint": "#3cddc7",
+                      "on-surface": "#e5e2e1",
+                      "on-primary": "#003731",
+                      "on-error-container": "#ffdad6",
+                      "secondary-container": "#83c300",
+                      "tertiary": "#ffcdd1",
+                      "inverse-on-surface": "#313030",
+                      "on-secondary-fixed-variant": "#334f00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "20px",
+                      "unit": "8px",
+                      "section-gap": "160px",
+                      "gutter": "32px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "body-md": ["Manrope"],
+                      "label-sm": ["JetBrains Mono"],
+                      "display-lg": ["Plus Jakarta Sans"],
+                      "display-lg-mobile": ["Plus Jakarta Sans"],
+                      "body-lg": ["Manrope"]
+              },
+              "fontSize": {
+                      "headline-md": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                      "display-lg-mobile": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        /* Base Glassmorphic Styles */
+        body { background-color: #0A0A0A; } /* Overriding tailwind class slightly for strict adherence to prompt color #0A0A0A, though ideally we'd use surface-container-lowest */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .perspective-container { perspective: 2000px; }
+        .hero-tilt {
+            transform: rotateX(12deg) rotateY(-8deg) rotateZ(2deg);
+            transform-style: preserve-3d;
+            box-shadow: -20px 40px 80px -10px rgba(87, 241, 219, 0.15), 20px -20px 60px -20px rgba(157, 223, 46, 0.1);
+        }
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, theme('colors.primary'), theme('colors.secondary'));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .glow-border:hover::before, .glow-border:focus-within::before {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-[#0A0A0A] text-on-background min-h-screen font-body-md overflow-x-hidden selection:bg-primary/30 selection:text-primary-fixed">
+<!-- Ambient Background Glows -->
+<div class="fixed top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/5 blur-[120px] pointer-events-none z-0"></div>
+<div class="fixed bottom-[-20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-secondary/5 blur-[100px] pointer-events-none z-0"></div>
+<!-- SideNavBar (from JSON) -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-surface/80 backdrop-blur-xl border-r border-white/10 shadow-2xl shadow-primary/5 flex flex-col p-6 gap-8 z-50">
+<div class="flex flex-col gap-1">
+<span class="font-headline-md text-headline-md font-bold text-primary !text-[32px] !leading-[40px]">AntiGravity</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Premium SaaS</span>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Active Tab -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary-container/20 text-primary font-bold border border-primary/20 hover:bg-white/5 transition-all duration-300 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-body-md text-body-md font-bold">Dashboard</span>
+</a>
+<!-- Inactive Tabs -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">campaign</span>
+<span class="font-body-md text-body-md">Outreach</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Profiles</span>
+</a>
+</div>
+<div class="mt-auto">
+<button class="w-full py-3 rounded-xl bg-surface-variant/50 border border-white/10 text-on-surface font-label-sm text-label-sm font-bold hover:bg-white/10 transition-all duration-300">Upgrade Now</button>
+</div>
+</nav>
+<!-- TopAppBar (from JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-surface/50 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-8 h-20 shadow-none">
+<div></div> <!-- Empty left spacer -->
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer text-[24px]">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer text-[24px]">settings</span>
+<div class="w-10 h-10 rounded-full border border-primary/30 overflow-hidden ml-2 cursor-pointer hover:border-primary transition-colors">
+<img class="w-full h-full object-cover" data-alt="A highly detailed, futuristic digital avatar of a human silhouette constructed from glowing neon teal and lime green geometric shards against a pitch black void, rendered in a sleek 3D graphic style suitable for a high-end tech dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQJmUR7rQwBhFczg7xuPxt36BvAyTzS2nVpC0muVP9_7VoI7pJPhZF2qBmXp9tqbdZ2gsv7PEkadPNUGS8_-xBGwSM17Gb1X720MGwlFDFa_5sCLJk73qUZ3NhzC4gVA3eqrLKMI-bK_FU1iaMOt0daZTtUvD4l51uU5XWjcEVqLghan0CduPXZsVH_r8gicicPURuq5HzxG--1pqgzt0KndBxn0kgrzbAO3RqgmttL8Zh4h7LneCO5w"/>
+</div>
+</div>
+</header>
+<!-- Main Layout Container -->
+<main class="ml-64 pt-28 px-10 pb-20 relative z-10 w-[calc(100%-16rem)] min-h-screen flex flex-col gap-10">
+<!-- Header Section -->
+<div class="flex justify-between items-end relative z-20">
+<div class="flex flex-col gap-2">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-transparent bg-clip-text bg-gradient-to-br from-white to-on-surface-variant drop-shadow-sm">Pipeline Intelligence</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">Evaluate, filter, and export top-tier candidate profiles matched by the AntiGravity heuristic engine.</p>
+</div>
+<!-- Export Button (Glowing Pill) -->
+<button class="relative group px-8 py-4 rounded-full bg-surface text-on-surface font-label-sm text-label-sm flex items-center gap-3 overflow-hidden transition-transform active:scale-95">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="absolute inset-[-1px] rounded-full bg-gradient-to-r from-primary to-secondary opacity-50 group-hover:opacity-100 z-0 transition-opacity duration-300 blur-[2px]"></div>
+<div class="absolute inset-[1px] rounded-full bg-surface z-10"></div>
+<span class="relative z-20 material-symbols-outlined text-primary group-hover:text-secondary transition-colors">download</span>
+<span class="relative z-20 font-bold uppercase tracking-wider">Export to Google Sheets</span>
+</button>
+</div>
+<!-- 3D Decorative Tilted Dashboard Preview (using required image) -->
+<div class="perspective-container absolute top-10 right-0 w-[400px] h-[300px] pointer-events-none opacity-30 z-0 hidden lg:block">
+<div class="hero-tilt w-full h-full rounded-2xl overflow-hidden border border-white/10 glass-panel">
+<div class="h-6 bg-surface-container-high border-b border-white/10 flex items-center px-3 gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+</div>
+<img alt="Dashboard Background Preview" class="w-full h-full object-cover object-top opacity-80 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm-1JRrFLKu6v5YJZTLfrypPs5AOzJc0I2Ztrgt6X7TtAPYz6g3E8xozbMPhqK0oKzjI4M38YIYoIh5S9wJFdMwAZw7la8u9y6ZdCV5mSxko19z2Urt9VdgCTkDtCOoEOahR6kR8Cuaz6jAgnrMNuwHoxn6dYWtbnZxyARfZU4SQpHy6CVxEbqjKuG8qLIvTEMeKBzvCEFHQ4bZpCHRASI9cvNC3czThEDfub6L-wBH53dfGvBd-woe_tD7XFRcACujjQ"/>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="glass-panel rounded-2xl p-6 relative z-20 shadow-2xl shadow-black/60">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 items-end">
+<!-- Search -->
+<div class="xl:col-span-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Search</label>
+<div class="glow-border rounded-xl">
+<div class="relative flex items-center bg-surface-container rounded-xl">
+<span class="material-symbols-outlined absolute left-4 text-on-surface-variant">search</span>
+<input class="w-full bg-transparent text-on-surface border-none px-4 py-3 pl-12 font-body-md text-body-md focus:ring-0 placeholder:text-on-surface-variant/30 rounded-xl" placeholder="Job title, company..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Source -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Source</label>
+<div class="glow-border rounded-xl">
+<select class="w-full bg-surface-container text-on-surface border-none px-4 py-3 font-body-md text-body-md focus:ring-0 rounded-xl appearance-none cursor-pointer">
+<option>All Sources</option>
+<option>LinkedIn</option>
+<option>GitHub</option>
+</select>
+</div>
+</div>
+<!-- Status -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Status</label>
+<div class="glow-border rounded-xl">
+<select class="w-full bg-surface-container text-on-surface border-none px-4 py-3 font-body-md text-body-md focus:ring-0 rounded-xl appearance-none cursor-pointer">
+<option>Active</option>
+<option>Sourced</option>
+<option>Interviewing</option>
+</select>
+</div>
+</div>
+<!-- Min Score -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Min Score</label>
+<div class="glow-border rounded-xl">
+<input class="w-full bg-surface-container text-on-surface border-none px-4 py-3 font-body-md text-body-md focus:ring-0 placeholder:text-on-surface-variant/30 rounded-xl" placeholder="0" type="number"/>
+</div>
+</div>
+<!-- Region -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Region</label>
+<div class="glow-border rounded-xl">
+<select class="w-full bg-surface-container text-on-surface border-none px-4 py-3 font-body-md text-body-md focus:ring-0 rounded-xl appearance-none cursor-pointer">
+<option>Global</option>
+<option>US Only</option>
+<option>EU Only</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Tech (Tag input styling) -->
+<div class="mt-4 pt-4 border-t border-white/5">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-3">Tech Stack Filter</label>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary font-label-sm text-label-sm cursor-pointer hover:bg-primary/20 transition-colors flex items-center gap-2">
+                        React <span class="material-symbols-outlined text-[14px]">close</span>
+</span>
+<span class="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary font-label-sm text-label-sm cursor-pointer hover:bg-primary/20 transition-colors flex items-center gap-2">
+                        Node.js <span class="material-symbols-outlined text-[14px]">close</span>
+</span>
+<span class="px-4 py-1.5 rounded-full border border-dashed border-outline-variant text-on-surface-variant font-label-sm text-label-sm cursor-pointer hover:text-on-surface transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">add</span> Add Tech
+                    </span>
+</div>
+</div>
+</div>
+<!-- Job List Header -->
+<div class="grid grid-cols-12 gap-4 px-6 mb-2 text-on-surface-variant font-label-sm text-label-sm uppercase tracking-widest relative z-20">
+<div class="col-span-4">Candidate &amp; Role</div>
+<div class="col-span-3">Tech Stack</div>
+<div class="col-span-1 text-center">Region</div>
+<div class="col-span-1 text-center">Score</div>
+<div class="col-span-2 text-center">Status</div>
+<div class="col-span-1 text-right">Actions</div>
+</div>
+<!-- Job List Rows Container -->
+<div class="flex flex-col gap-3 relative z-20 pb-20">
+<!-- Row 1: Excellent (Green Score/Region) -->
+<div class="group glass-panel rounded-xl p-4 grid grid-cols-12 gap-4 items-center hover:bg-surface-container-high/60 transition-all duration-300 hover:scale-[1.01] origin-left">
+<!-- Title & Location -->
+<div class="col-span-4 flex flex-col gap-1">
+<h3 class="font-body-md text-body-md font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary cursor-pointer w-fit">Senior Fullstack Engineer</h3>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">domain</span> Stripe
+                        <span class="w-1 h-1 rounded-full bg-white/20"></span>
+<span class="material-symbols-outlined text-[14px]">location_on</span> San Francisco, CA
+                    </div>
+</div>
+<!-- Tech Chips -->
+<div class="col-span-3 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-label-sm text-[10px] border border-white/5">React</span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-label-sm text-[10px] border border-white/5">Go</span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-label-sm text-[10px] border border-white/5">PostgreSQL</span>
+</div>
+<!-- Region (Yes = Green) -->
+<div class="col-span-1 flex justify-center">
+<div class="px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary font-label-sm text-label-sm flex items-center gap-1 shadow-[0_0_10px_rgba(157,223,46,0.2)]">
+                        Yes
+                    </div>
+</div>
+<!-- Score (70+ = Green) -->
+<div class="col-span-1 flex justify-center">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-secondary/10 border border-secondary/30 text-secondary font-body-md font-bold shadow-[0_0_15px_rgba(157,223,46,0.3)]">
+                        94
+                    </div>
+</div>
+<!-- Status -->
+<div class="col-span-2 flex justify-center">
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div> Active
+                    </div>
+</div>
+<!-- Actions -->
+<div class="col-span-1 flex justify-end">
+<button class="p-2 rounded-full text-outline hover:text-error hover:bg-error/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+<!-- Row 2: Moderate (Amber/Neutral Score/Region) -->
+<div class="group glass-panel rounded-xl p-4 grid grid-cols-12 gap-4 items-center hover:bg-surface-container-high/60 transition-all duration-300 hover:scale-[1.01] origin-left">
+<div class="col-span-4 flex flex-col gap-1">
+<h3 class="font-body-md text-body-md font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary cursor-pointer w-fit">Frontend Specialist</h3>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">domain</span> Vercel
+                        <span class="w-1 h-1 rounded-full bg-white/20"></span>
+<span class="material-symbols-outlined text-[14px]">location_on</span> Remote, EU
+                    </div>
+</div>
+<div class="col-span-3 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-label-sm text-[10px] border border-white/5">Vue</span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-label-sm text-[10px] border border-white/5">Nuxt</span>
+</div>
+<!-- Region (Maybe = Outline/Amber-ish) -->
+<div class="col-span-1 flex justify-center">
+<div class="px-3 py-1 rounded-full bg-outline/10 border border-outline/30 text-outline font-label-sm text-label-sm flex items-center gap-1">
+                        Maybe
+                    </div>
+</div>
+<!-- Score (40-69 = Outline/Amber-ish) -->
+<div class="col-span-1 flex justify-center">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-outline/10 border border-outline/30 text-outline font-body-md font-bold">
+                        58
+                    </div>
+</div>
+<div class="col-span-2 flex justify-center">
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<div class="w-2 h-2 rounded-full bg-outline"></div> Sourced
+                    </div>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="p-2 rounded-full text-outline hover:text-error hover:bg-error/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+<!-- Row 3: Poor (Red Score/Region) -->
+<div class="group glass-panel rounded-xl p-4 grid grid-cols-12 gap-4 items-center hover:bg-surface-container-high/60 transition-all duration-300 hover:scale-[1.01] origin-left opacity-70 hover:opacity-100">
+<div class="col-span-4 flex flex-col gap-1">
+<h3 class="font-body-md text-body-md font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary cursor-pointer w-fit">Backend Developer</h3>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">domain</span> Unknown Startup
+                        <span class="w-1 h-1 rounded-full bg-white/20"></span>
+<span class="material-symbols-outlined text-[14px]">location_on</span> New York, NY
+                    </div>
+</div>
+<div class="col-span-3 flex flex-wrap gap-1.5">
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-label-sm text-[10px] border border-white/5">Python</span>
+<span class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-label-sm text-[10px] border border-white/5">Django</span>
+</div>
+<!-- Region (No = Red) -->
+<div class="col-span-1 flex justify-center">
+<div class="px-3 py-1 rounded-full bg-error/10 border border-error/30 text-error font-label-sm text-label-sm flex items-center gap-1 shadow-[0_0_10px_rgba(255,180,171,0.1)]">
+                        No
+                    </div>
+</div>
+<!-- Score (<40 = Red) -->
+<div class="col-span-1 flex justify-center">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-error/10 border border-error/30 text-error font-body-md font-bold shadow-[0_0_15px_rgba(255,180,171,0.2)]">
+                        32
+                    </div>
+</div>
+<div class="col-span-2 flex justify-center">
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<div class="w-2 h-2 rounded-full bg-error/50"></div> Rejected
+                    </div>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="p-2 rounded-full text-outline hover:text-error hover:bg-error/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/11372909781183248744/screens/1d5f4a04f71d4a3699ae215911a6336d\",\"title\":\"Features - Job Scraper\",\"screenshot\":{\"name\":\"projects/11372909781183248744/screens/1d5f4a04f71d4a3699ae215911a6336d/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AP1WRLtmu8owNO6axUqWvAU0cSoSfyL_tPZvTdcIJKpYqOIUsUvIOMLZxfF40-LOANQZ0gvLbKBC_Tn1O4IG5He4to16BYV2eeYCPcbkStlJje4fW5KKzD1Lyyi8bSvq-iaJaofvU-d4rOCFADrbkEcorTk_9BwNjLStUKLAtTNO2MMjsaRceoVpXU8G7JYhNY4xMJjFPfTmJ0MMPB0CiZPSQIb3DeSJuE_nU2oYNRsm8_Mi5yfY_fbSioz3GPDZ\"},\"htmlCode\":{\"name\":\"projects/11372909781183248744/screens/1d5f4a04f71d4a3699ae215911a6336d/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1OTVhNmUzNzI4ZmUwMWE2MjlhODFjMGRlZGUxEgsSBxCwxdP3oBgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTM3MjkwOTc4MTE4MzI0ODc0NA&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"3130\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "3130",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1OTVhNmUzNzI4ZmUwMWE2MjlhODFjMGRlZGUxEgsSBxCwxdP3oBgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTM3MjkwOTc4MTE4MzI0ODc0NA&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/11372909781183248744/screens/1d5f4a04f71d4a3699ae215911a6336d/fileEntries/html"
+    },
+    "name": "projects/11372909781183248744/screens/1d5f4a04f71d4a3699ae215911a6336d",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLtmu8owNO6axUqWvAU0cSoSfyL_tPZvTdcIJKpYqOIUsUvIOMLZxfF40-LOANQZ0gvLbKBC_Tn1O4IG5He4to16BYV2eeYCPcbkStlJje4fW5KKzD1Lyyi8bSvq-iaJaofvU-d4rOCFADrbkEcorTk_9BwNjLStUKLAtTNO2MMjsaRceoVpXU8G7JYhNY4xMJjFPfTmJ0MMPB0CiZPSQIb3DeSJuE_nU2oYNRsm8_Mi5yfY_fbSioz3GPDZ",
+      "name": "projects/11372909781183248744/screens/1d5f4a04f71d4a3699ae215911a6336d/fileEntries/screenshot"
+    },
+    "title": "Features - Job Scraper",
+    "width": "2560"
+  }
+}

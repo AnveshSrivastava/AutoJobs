@@ -101,7 +101,7 @@ export default function OutreachPage() {
           <div className="flex-col" style={{ width: '160px' }}>
             <label className="form-label text-muted" style={{ fontSize: '12px' }}>Status</label>
             <select name="status" className="form-select" value={filters.status} onChange={handleFilterChange}>
-              <option value="">All Statuses</option>
+              <option value="">All Status</option>
               <option value="pending">Pending</option>
               <option value="messaged">Messaged</option>
               <option value="replied">Replied</option>
@@ -147,8 +147,8 @@ export default function OutreachPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <select 
-                    className="form-select" 
-                    style={{ width: '150px', background: 'var(--bg-primary)' }}
+                    className="status-pill" 
+                    style={{ background: 'var(--bg-primary)' }}
                     value={record.status}
                     onChange={(e) => updateStatus.mutate({ id: record.id, status: e.target.value })}
                   >

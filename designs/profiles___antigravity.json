@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/11372909781183248744/screens/53615c754ef34a2ca841b017beb10b91\",\"title\":\"Profiles - AntiGravity\",\"screenshot\":{\"name\":\"projects/11372909781183248744/screens/53615c754ef34a2ca841b017beb10b91/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AP1WRLsCt23YKIu6BPV3CDAdz8kS3gWeyTjU3w3YTrI8adHfI8PVeJqLmdX_JvdWABL4jfpu67RPh1dOSPeZ7Jl4x9_mNHHNIOzdPrALlT3CNsn_qK-iUs2dMfUiqPCFII-99nz_doJFY8DlADZtndrs8LIOPMZbKRE09NkaW1OiaElDYE8R0jR-s5PHCLaoZnQHgGyOkJ4Go3166EtuypQ8AjllTqXGEQgaA4OENRTsMe47HLpnK-50vbhtcXb7\"},\"htmlCode\":{\"name\":\"projects/11372909781183248744/screens/53615c754ef34a2ca841b017beb10b91/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1OTVhODBjZWNiMzQwN2M0ZDI0ZjJmMDU2MmNhEgsSBxCwxdP3oBgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTM3MjkwOTc4MTE4MzI0ODc0NA&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2560\",\"height\":\"2284\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "2284",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1OTVhODBjZWNiMzQwN2M0ZDI0ZjJmMDU2MmNhEgsSBxCwxdP3oBgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTM3MjkwOTc4MTE4MzI0ODc0NA&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/11372909781183248744/screens/53615c754ef34a2ca841b017beb10b91/fileEntries/html"
+    },
+    "name": "projects/11372909781183248744/screens/53615c754ef34a2ca841b017beb10b91",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLsCt23YKIu6BPV3CDAdz8kS3gWeyTjU3w3YTrI8adHfI8PVeJqLmdX_JvdWABL4jfpu67RPh1dOSPeZ7Jl4x9_mNHHNIOzdPrALlT3CNsn_qK-iUs2dMfUiqPCFII-99nz_doJFY8DlADZtndrs8LIOPMZbKRE09NkaW1OiaElDYE8R0jR-s5PHCLaoZnQHgGyOkJ4Go3166EtuypQ8AjllTqXGEQgaA4OENRTsMe47HLpnK-50vbhtcXb7",
+      "name": "projects/11372909781183248744/screens/53615c754ef34a2ca841b017beb10b91/fileEntries/screenshot"
+    },
+    "title": "Profiles - AntiGravity",
+    "width": "2560"
+  }
+}

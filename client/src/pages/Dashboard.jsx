@@ -143,7 +143,7 @@ export default function DashboardPage() {
           <div className="flex-col" style={{ width: '120px' }}>
             <label className="form-label text-muted" style={{ fontSize: '12px' }}>Status</label>
             <select name="status" className="form-select" value={filters.status} onChange={handleFilterChange}>
-              <option value="">All Statuses</option>
+              <option value="">All Status</option>
               <option value="new">New</option>
               <option value="reviewed">Reviewed</option>
               <option value="applied">Applied</option>

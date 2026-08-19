@@ -33,19 +33,7 @@ export function ChipInput({ value = [], onChange, placeholder }) {
       }}
     >
       {value.map((tag, index) => (
-        <span 
-          key={index} 
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            backgroundColor: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-color)',
-            padding: '2px 8px',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '13px'
-          }}
-        >
+        <span key={index} className="chip">
           {tag}
           <button 
             type="button" 

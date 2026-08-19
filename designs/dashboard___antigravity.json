@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "text": "{\"name\":\"projects/11372909781183248744/screens/d96f6104cc654c47a5b8179b6af66d6f\",\"title\":\"Dashboard - AntiGravity\",\"screenshot\":{\"name\":\"projects/11372909781183248744/screens/d96f6104cc654c47a5b8179b6af66d6f/fileEntries/screenshot\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AP1WRLupfGZMAMHUJ5ax5unSkKOBAfWCpmvQvHvUF4sFJnfyU-AobRbQMg9NmjX-cRlwDIgJLWoursoGsS-ghYJnv2nIsL-P2IoDB2OGVTKfn4XQccNPbanm-nFEhba_jeWj56WQEH6RJuh6LCooWTepCbcqlsLNTK4CR_-LKmYEV07kh7Fa1buBtOeXTw8zDR5F6FqU-7wWZpbkmRqLaALH5CvBixEFXhzr3YW0mv7KlfnIqpnun58nnHBhPXWN\"},\"htmlCode\":{\"name\":\"projects/11372909781183248744/screens/d96f6104cc654c47a5b8179b6af66d6f/fileEntries/html\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1OTVhODI3MzYzOTYwMzMyZWIwZjczMDlmYzkwEgsSBxCwxdP3oBgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTM3MjkwOTc4MTE4MzI0ODc0NA&filename=&opi=89354086\",\"mimeType\":\"text/html\"},\"width\":\"2816\",\"height\":\"2458\",\"deviceType\":\"DESKTOP\"}",
+      "type": "text"
+    }
+  ],
+  "structuredContent": {
+    "deviceType": "DESKTOP",
+    "height": "2458",
+    "htmlCode": {
+      "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1OTVhODI3MzYzOTYwMzMyZWIwZjczMDlmYzkwEgsSBxCwxdP3oBgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTM3MjkwOTc4MTE4MzI0ODc0NA&filename=&opi=89354086",
+      "mimeType": "text/html",
+      "name": "projects/11372909781183248744/screens/d96f6104cc654c47a5b8179b6af66d6f/fileEntries/html"
+    },
+    "name": "projects/11372909781183248744/screens/d96f6104cc654c47a5b8179b6af66d6f",
+    "screenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLupfGZMAMHUJ5ax5unSkKOBAfWCpmvQvHvUF4sFJnfyU-AobRbQMg9NmjX-cRlwDIgJLWoursoGsS-ghYJnv2nIsL-P2IoDB2OGVTKfn4XQccNPbanm-nFEhba_jeWj56WQEH6RJuh6LCooWTepCbcqlsLNTK4CR_-LKmYEV07kh7Fa1buBtOeXTw8zDR5F6FqU-7wWZpbkmRqLaALH5CvBixEFXhzr3YW0mv7KlfnIqpnun58nnHBhPXWN",
+      "name": "projects/11372909781183248744/screens/d96f6104cc654c47a5b8179b6af66d6f/fileEntries/screenshot"
+    },
+    "title": "Dashboard - AntiGravity",
+    "width": "2816"
+  }
+}

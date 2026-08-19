@@ -12,7 +12,7 @@ const assert = require('assert');
   try {
     // 1. 3-Filter Intersection (Dashboard)
     console.log("1. Testing 3-filter intersection...");
-    await page.goto('http://127.0.0.1:3000/');
+    await page.goto('http://127.0.0.1:3000/app');
     await page.waitForSelector('table', { timeout: 5000 });
     
     // Apply min_score, region=yes, tech keyword
@@ -43,7 +43,7 @@ const assert = require('assert');
 
     // 2. Profile Editor UI - Validation Error (Zod integration)
     console.log("2. Testing Profile Editor Validation Error UI...");
-    await page.goto('http://127.0.0.1:3000/profile');
+    await page.goto('http://127.0.0.1:3000/app/profile');
     await page.waitForSelector('form', { timeout: 5000 });
     
     // Clear the JSearch query to trigger required error

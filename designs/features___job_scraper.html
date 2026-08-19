@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Job Scraper - Features</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&amp;family=Manrope:wght@400;500;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#912038",
+                        "surface-container-highest": "#353534",
+                        "surface": "#131313",
+                        "on-primary": "#003731",
+                        "inverse-primary": "#006b5f",
+                        "on-surface": "#e5e2e1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-variant": "#353534",
+                        "error": "#ffb4ab",
+                        "secondary": "#9ddf2e",
+                        "outline-variant": "#3c4a46",
+                        "primary-fixed-dim": "#3cddc7",
+                        "tertiary-fixed-dim": "#ffb2b9",
+                        "on-primary-container": "#00574d",
+                        "background": "#131313",
+                        "surface-tint": "#3cddc7",
+                        "on-surface-variant": "#bacac5",
+                        "surface-container": "#201f1f",
+                        "on-tertiary-fixed": "#400010",
+                        "surface-container-low": "#1c1b1b",
+                        "on-primary-fixed-variant": "#005047",
+                        "secondary-container": "#83c300",
+                        "on-secondary": "#213600",
+                        "inverse-on-surface": "#313030",
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-dim": "#131313",
+                        "secondary-fixed-dim": "#98da27",
+                        "primary": "#57f1db",
+                        "primary-container": "#2dd4bf",
+                        "outline": "#859490",
+                        "surface-container-high": "#2a2a2a",
+                        "on-primary-fixed": "#00201c",
+                        "secondary-fixed": "#b2f746",
+                        "error-container": "#93000a",
+                        "tertiary-container": "#ffa5ae",
+                        "on-tertiary-fixed-variant": "#891933",
+                        "tertiary-fixed": "#ffdadc",
+                        "on-error": "#690005",
+                        "on-secondary-container": "#304b00",
+                        "on-secondary-fixed": "#121f00",
+                        "primary-fixed": "#62fae3",
+                        "on-tertiary": "#67001f",
+                        "on-secondary-fixed-variant": "#334f00",
+                        "on-background": "#e5e2e1",
+                        "surface-bright": "#3a3939",
+                        "tertiary": "#ffcdd1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "gutter": "32px",
+                        "margin-mobile": "20px",
+                        "section-gap": "160px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Manrope"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Manrope"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .light-mode-section {
+            background-color: #F5F3ED; /* Beige requested by user */
+            color: #131313; /* Forcing dark text on light bg */
+        }
+        
+        .light-glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .light-glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(93, 241, 219, 0.15); /* primary color ambient shadow */
+        }
+
+        .glow-button {
+            position: relative;
+            background: #131313;
+            border-radius: 9999px;
+            z-index: 1;
+        }
+        
+        .glow-button::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #57f1db, #9ddf2e, #ffcdd1);
+            z-index: -1;
+            border-radius: 9999px;
+            transition: opacity 0.3s ease, filter 0.3s ease;
+            opacity: 0.8;
+            filter: blur(2px);
+        }
+        
+        .glow-button:hover::before {
+            filter: blur(8px);
+            opacity: 1;
+        }
+        
+        /* Typography overrides for light section */
+        .light-mode-section .text-on-surface { color: #131313; }
+        .light-mode-section .text-on-surface-variant { color: #353534; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased overflow-x-hidden selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm">
+<div class="flex justify-between items-center px-margin-mobile md:px-gutter py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<span class="font-headline-md text-body-lg font-bold text-on-surface">Job Scraper</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-primary font-bold font-body-md text-body-md" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">How it works</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Pricing</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Docs</a>
+</div>
+<div>
+<button class="glow-button px-6 py-2 text-on-surface font-body-md text-body-md scale-95 active:scale-90 transition-transform">
+                    Try for free
+                </button>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="pt-[100px]">
+<!-- Feature Grid Section (Light Beige) -->
+<section class="light-mode-section py-section-gap px-margin-mobile md:px-gutter relative overflow-hidden">
+<!-- Decorative background elements -->
+<div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+<div class="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-gradient-to-br from-primary/10 to-secondary/10 blur-[100px] rounded-full"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-gradient-to-tr from-tertiary/10 to-primary/10 blur-[120px] rounded-full"></div>
+</div>
+<div class="max-w-container-max mx-auto relative z-10">
+<!-- Section Header -->
+<div class="text-center max-w-3xl mx-auto mb-20">
+<h2 class="font-display-lg-mobile md:font-display-lg text-on-surface mb-6">Built for developers who'd rather build than browse.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Automate your job search with precision. Define your rules, run the engine, and review highly qualified leads directly in your inbox.</p>
+</div>
+<!-- Feature Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="light-glass-card rounded-xl p-8 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">rule</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">Rule-based scoring</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Define strict criteria for tech stack, salary range, and company size to automatically rank incoming opportunities.</p>
+</div>
+<!-- Card 2 -->
+<div class="light-glass-card rounded-xl p-8 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">search_insights</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">7 LinkedIn searches generated</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Dynamically construct complex boolean search strings based on your profile to bypass standard filtering limitations.</p>
+</div>
+<!-- Card 3 -->
+<div class="light-glass-card rounded-xl p-8 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">mail</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">Daily email digest at 9AM</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Wake up to a curated list of top matches delivered straight to your inbox, ready for action.</p>
+</div>
+<!-- Card 4 -->
+<div class="light-glass-card rounded-xl p-8 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">corporate_fare</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">150+ companies crawled</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Access data from direct career pages across the tech industry, bypassing saturated third-party job boards.</p>
+</div>
+<!-- Card 5 -->
+<div class="light-glass-card rounded-xl p-8 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">swap_horiz</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">Switch target roles with one click</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Pivot your search strategy instantly. Change parameters from Backend to Fullstack without rebuilding your pipeline.</p>
+</div>
+<!-- Card 6 -->
+<div class="light-glass-card rounded-xl p-8 flex flex-col gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">memory</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold text-on-surface">Runs entirely on your own machine</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Keep your search private and secure. The core engine runs locally, ensuring your data never leaves your environment.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface w-full py-section-gap px-margin-mobile border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter max-w-container-max mx-auto">
+<!-- Brand Column -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<span class="font-headline-md text-body-lg text-on-surface font-bold">Job Scraper</span>
+</div>
+<p class="font-body-md text-body-md text-secondary mt-4">© 2024 Job Scraper. Built for developers.</p>
+</div>
+<!-- Links -->
+<div class="flex flex-col gap-3">
+<a class="text-on-surface font-bold font-body-md text-body-md underline-offset-4 hover:underline" href="#">Product</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md underline-offset-4 hover:underline" href="#">Docs</a>
+</div>
+<div class="flex flex-col gap-3">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md underline-offset-4 hover:underline" href="#">GitHub</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md underline-offset-4 hover:underline" href="#">Changelog</a>
+</div>
+<div class="flex flex-col gap-3">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md underline-offset-4 hover:underline" href="#">Privacy</a>
+</div>
+</div>
+</footer>
+</body></html>
